@@ -1,6 +1,12 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../Utils/Validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../Utils/firebase";
+
 const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
@@ -9,6 +15,42 @@ const Login = () => {
   let handelButtonClick = () => {
     const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
+
+    if (message) return;
+
+    //Singup and Singin Logic
+    if (!isLoginFrom) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user)
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode + "-", errorMessage);
+          // ..
+        });
+    } else {
+      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user)
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode + "-", errorMessage);
+        });
+    }
   };
   let toggleSingInForm = () => {
     SetLoginForm(!isLoginFrom);

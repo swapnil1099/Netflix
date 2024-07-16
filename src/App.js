@@ -1,11 +1,12 @@
+import { Provider } from "react-redux";
 import "./App.css";
 import Body from "./Components/Body";
 
 function App() {
   return (
-    <div className="App">
+    <Provider>
       <Body />
-    </div>
+    </Provider>
   );
 }
 
