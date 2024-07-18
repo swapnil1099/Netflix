@@ -4,12 +4,16 @@ import { checkValidData } from "../Utils/Validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../Utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const email = useRef(null);
   const password = useRef(null);
+  const name = useRef();
   const [isLoginFrom, SetLoginForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState();
   let handelButtonClick = () => {
@@ -23,12 +27,26 @@ const Login = () => {
       createUserWithEmailAndPassword(
         auth,
         email.current.value,
-        password.current.value
+        password.current.value,
       )
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
-          console.log(user)
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: "https://example.com/jane-q-user/profile.jpg",
+          })
+            .then(() => {
+              // Profile updated!
+              // ...
+            })
+            .catch((error) => {
+              // An error occurred
+              setErrorMessage(message.error);
+              // ...
+            });
+          console.log(user);
+          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -38,11 +56,16 @@ const Login = () => {
           // ..
         });
     } else {
-      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user)
+          console.log(user);
+          navigate("/browse");
           // ...
         })
         .catch((error) => {
