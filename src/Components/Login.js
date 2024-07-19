@@ -16,6 +16,7 @@ const Login = () => {
   const name = useRef();
   const [isLoginFrom, SetLoginForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState();
+  
   let handelButtonClick = () => {
     const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
@@ -27,7 +28,7 @@ const Login = () => {
       createUserWithEmailAndPassword(
         auth,
         email.current.value,
-        password.current.value,
+        password.current.value
       )
         .then((userCredential) => {
           // Signed up
